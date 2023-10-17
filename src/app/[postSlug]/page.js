@@ -4,14 +4,23 @@ import BlogHero from "@/components/BlogHero";
 import styles from "./postSlug.module.css";
 import { loadBlogPost } from "@/helpers/file-helpers";
 
+export async function generateMetadata({ params }) {
+  const { frontmatter } = await loadBlogPost(params.postSlug);
+
+  return {
+    title: `${frontmatter.title}`,
+    description: `${frontmatter.abstract}`,
+  };
+}
+
 async function BlogPost({ params }) {
-  const blog = await loadBlogPost(params.postSlug);
+  const { frontmatter, content } = await loadBlogPost(params.postSlug);
 
   return (
     <article className={styles.wrapper}>
-      <BlogHero {...blog.frontmatter} />
+      <BlogHero {...frontmatter} />
       <div className={styles.page}>
-        <MDXRemote source={blog.content} />
+        <MDXRemote source={content} />
       </div>
     </article>
   );
